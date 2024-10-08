@@ -1,5 +1,3 @@
-
-
 #ifndef MATRIX
 #define MATRIX
 
@@ -8,6 +6,7 @@ typedef struct Matrix Matrix;
 
 Matrix* Matrix_create(int rows, int cols);
 void Matrix_free(Matrix **A);
+void Matrix_freeN(int n, ...);
 
 void Matrix_print(Matrix *A, const char *name);
 

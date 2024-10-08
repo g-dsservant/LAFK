@@ -1,34 +1,11 @@
 #include "Matrix.h"
+#include "Matrix_private.h"
 #include<stdio.h>
 #include<stdlib.h>
 #include<assert.h>
 #include<time.h>
+#include<stdarg.h>
 
-
-#define CHECK(A) assert(A != NULL)
-#define MAT_POS(m, i, j) (m->elements)[i*(m->row_stride) + j*(m->col_stride)]
-#define FLAT_INDEX(m, i, j) (i*(m->row_stride) + j*(m->col_stride))
-
-//-----------------------------------
-
-void Swap(double *a, double* b) {
-  double temp = *a;
-  *a = *b;
-  *b = temp;
-}
-
-//-----------------------------------
-
-struct Matrix {
-  int rows;
-  int cols;
-  int row_stride;
-  int col_stride;
-  double *elements;
-  int memfree_flag;
-};
-
-//-----------------------------------
 
 Matrix* Matrix_create(int rows, int cols) {
 
@@ -45,7 +22,6 @@ Matrix* Matrix_create(int rows, int cols) {
   return m;
 }
 
-//-----------------------------------
 
 void Matrix_free(Matrix **A) {
   if ((*A)->memfree_flag) {
@@ -56,7 +32,21 @@ void Matrix_free(Matrix **A) {
   *A = NULL;
 }
 
-//-----------------------------------
+
+void Matrix_freeN(int n, ...) {
+
+  va_list Matrices;
+  va_start(Matrices, n);
+
+  for (int i = 0; i < n; ++i) {
+    Matrix **Temp = va_arg(Matrices, Matrix **);
+    Matrix_free(Temp);
+  }
+
+  va_end(Matrices);
+
+}
+
 
 void Matrix_print(Matrix *A, const char* name) {
 
@@ -74,7 +64,6 @@ void Matrix_print(Matrix *A, const char* name) {
 
 }
 
-//-----------------------------------
 
 void Matrix_fill(Matrix *A, double num) {
 
@@ -87,7 +76,6 @@ void Matrix_fill(Matrix *A, double num) {
   }
 }
 
-//-----------------------------------
 
 void Matrix_rand(Matrix *A, int low, int high) {
 
@@ -106,7 +94,6 @@ void Matrix_rand(Matrix *A, int low, int high) {
   }
 }
 
-//-----------------------------------
 
 void Matrix_sum(Matrix *A, Matrix *B) {
 
@@ -124,7 +111,6 @@ void Matrix_sum(Matrix *A, Matrix *B) {
   }
 }
 
-//-----------------------------------
 
 void Matrix_multiply(Matrix *Result, Matrix *A, Matrix *B) {
 
@@ -149,7 +135,6 @@ void Matrix_multiply(Matrix *Result, Matrix *A, Matrix *B) {
   }
 }
 
-//-----------------------------------
 
 void Matrix_difference(Matrix *A, Matrix *B) {
 
@@ -167,7 +152,6 @@ void Matrix_difference(Matrix *A, Matrix *B) {
   }
 }
 
-//-----------------------------------
 
 void Matrix_haddamard(Matrix *A, Matrix *B) {
 
@@ -185,7 +169,6 @@ void Matrix_haddamard(Matrix *A, Matrix *B) {
   }
 }
 
-//-----------------------------------
 
 void Matrix_scalarprod(Matrix *A, double B) {
   CHECK(A);
@@ -195,10 +178,8 @@ void Matrix_scalarprod(Matrix *A, double B) {
       MAT_POS(A, i, j) *= B;
     }
   }
-
 }
 
-//-----------------------------------
 
 void Matrix_transpose(Matrix *A) {
 
@@ -211,7 +192,6 @@ void Matrix_transpose(Matrix *A) {
   }
 }
 
-//-----------------------------------
 
 Matrix* Matrix_submatrix(Matrix *A, int row_stride, int col_stride) {
   CHECK(A);
@@ -232,9 +212,6 @@ Matrix* Matrix_submatrix(Matrix *A, int row_stride, int col_stride) {
 
   return B;
 }
-
-//-----------------------------------
-
 
 
 Matrix* Matrix_slice(Matrix* A, int row_start, int row_end, int col_start, int col_end) {
@@ -262,7 +239,6 @@ Matrix* Matrix_slice(Matrix* A, int row_start, int row_end, int col_start, int c
   return B;
 }
 
-//-----------------------------------
 
 
 Matrix* Matrix_resize(Matrix *A, int rows, int cols) {
@@ -290,15 +266,5 @@ Matrix* Matrix_resize(Matrix *A, int rows, int cols) {
       }
     }
   }
-
   return B;
-  
 }
-
-//-----------------------------------
-
-
-
-
-
-

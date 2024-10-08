@@ -1,5 +1,3 @@
-# @title Matrix.c
-%%writefile Matrix.c
 #include "Matrix.h"
 #include "Matrix_private.h"
 #include<stdio.h>

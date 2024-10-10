@@ -1,3 +1,4 @@
+
 #ifndef MATRIX_PRIVATE
 #define MATRIX_PRIVATE
 
@@ -16,11 +17,6 @@ struct Matrix {
   int memfree_flag;
 };
 
-static void Swap(double *a, double* b) {
-  double temp = *a;
-  *a = *b;
-  *b = temp;
-}
 
 
 #endif

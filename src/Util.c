@@ -1,3 +1,4 @@
+
 #include "Util.h"
 #include "Matrix.h"
 #include "Matrix_private.h"
@@ -6,6 +7,13 @@
 #include<assert.h>
 #include<string.h>
 #include<time.h>
+
+
+void Swap(double *a, double* b) {
+  double temp = *a;
+  *a = *b;
+  *b = temp;
+}
 
 
 double Get_element(Matrix* A, int row, int col) {
@@ -18,7 +26,6 @@ double Get_element(Matrix* A, int row, int col) {
 
   return MAT_POS(A, row, col);
 }
-
 
 
 void Set_element(Matrix* A, int row, int col, double value) {
@@ -34,6 +41,18 @@ void Set_element(Matrix* A, int row, int col, double value) {
 
 
 
+void Matrix_apply(Matrix *A, double (*f)(double)) {
+  CHECK(A);
+
+  for (int i = 0; i < A->rows; ++i) {
+    for (int j = 0; j < A->cols; ++j) {
+      MAT_POS(A, i, j) = f(MAT_POS(A, i, j));
+    }
+  }
+}
+
+
+
 Matrix* Get_row(Matrix* A, int row) {
   CHECK(A);
   assert(row > 0 && row <= A->rows);
@@ -43,7 +62,6 @@ Matrix* Get_row(Matrix* A, int row) {
 }
 
 
-
 Matrix* Get_col(Matrix* A, int col) {
   CHECK(A);
   assert(col > 0 && col <= A->cols);
@@ -51,7 +69,6 @@ Matrix* Get_col(Matrix* A, int col) {
   Matrix* B = Matrix_slice(A, 1, A->rows, col, col);
   return B;
 }
-
 
 
 void Set_row(Matrix* A, int row, Matrix* B) {
@@ -67,7 +84,6 @@ void Set_row(Matrix* A, int row, Matrix* B) {
     MAT_POS(A, row, i) = MAT_POS(B, 0, i);
   }
 }
-
 
 
 void Set_col(Matrix* A, int col, Matrix* B) {
@@ -124,7 +140,6 @@ void Swap_cols(Matrix* A, int col1, int col2) {
 }
 
 
-
 void Matrix_copy(Matrix* A, Matrix* B) {
 
   CHECK(A);
@@ -138,8 +153,8 @@ void Matrix_copy(Matrix* A, Matrix* B) {
     }
   }
   return;
-}
 
+}
 
 
 Matrix* Matrix_conc(Matrix* A, Matrix* B, int Mode) {
@@ -182,4 +197,5 @@ Matrix* Matrix_conc(Matrix* A, Matrix* B, int Mode) {
 
   return NULL;
 }
+
 

@@ -21,7 +21,7 @@ void Set_col(Matrix* A, int col, Matrix* B);
 void Swap_rows(Matrix* A, int row1, int row2);
 void Swap_cols(Matrix* A, int col1, int col2);
 
-void Matrix_copy(Matrix* Src, Matrix* Des);
+void Matrix_copy(Matrix* Des, Matrix* Src);
 
 Matrix* Matrix_conc(Matrix* A, Matrix* B, int Mode);
 

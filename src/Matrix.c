@@ -1,3 +1,4 @@
+
 #include "Matrix.h"
 #include "Matrix_private.h"
 #include<stdio.h>
@@ -5,6 +6,7 @@
 #include<assert.h>
 #include<time.h>
 #include<stdarg.h>
+#include<string.h>
 
 
 Matrix* Matrix_create(int rows, int cols) {
@@ -22,6 +24,20 @@ Matrix* Matrix_create(int rows, int cols) {
   return m;
 }
 
+Matrix* Matrix_fromArray(int rows, int cols, double *arr) {
+  assert(rows > 0);
+  assert(cols > 0);
+
+  Matrix* m = (Matrix *)malloc(sizeof(Matrix));
+  m->rows = rows;
+  m->cols = cols;
+  m->row_stride = cols;
+  m->col_stride = 1;
+  m->elements = (double *)malloc(sizeof(double)*rows*cols);
+  memcpy(m->elements, arr, sizeof(double)*rows*cols);
+  m->memfree_flag = 1;
+  return m;
+}
 
 
 void Matrix_free(Matrix **A) {
@@ -34,7 +50,6 @@ void Matrix_free(Matrix **A) {
 }
 
 
-
 void Matrix_freeN(int n, ...) {
 
   va_list Matrices;
@@ -44,16 +59,16 @@ void Matrix_freeN(int n, ...) {
     Matrix **Temp = va_arg(Matrices, Matrix **);
     Matrix_free(Temp);
   }
-  va_end(Matrices);
-}
 
+  va_end(Matrices);
+
+}
 
 
 void Matrix_print(Matrix *A, const char* name) {
 
   CHECK(A);
 
-  printf("\n\n rows = %d, cols = %d\n", A->rows, A->cols);
   printf("\n\n %s = [ ", name);
   for (int i = 0; i < A->rows; ++i) {
     for (int j = 0; j < A->cols; ++j) {
@@ -66,7 +81,6 @@ void Matrix_print(Matrix *A, const char* name) {
 }
 
 
-
 void Matrix_fill(Matrix *A, double num) {
 
   CHECK(A);
@@ -77,7 +91,6 @@ void Matrix_fill(Matrix *A, double num) {
     }
   }
 }
-
 
 
 void Matrix_rand(Matrix *A, int low, int high) {
@@ -98,6 +111,13 @@ void Matrix_rand(Matrix *A, int low, int high) {
 }
 
 
+int colsize(Matrix *A) {
+  return A->cols;
+}
+int rowsize(Matrix *A) {
+  return A->rows;
+}
+
 
 void Matrix_sum(Matrix *A, Matrix *B) {
 
@@ -114,7 +134,6 @@ void Matrix_sum(Matrix *A, Matrix *B) {
     }
   }
 }
-
 
 
 void Matrix_multiply(Matrix *Result, Matrix *A, Matrix *B) {
@@ -141,7 +160,6 @@ void Matrix_multiply(Matrix *Result, Matrix *A, Matrix *B) {
 }
 
 
-
 void Matrix_difference(Matrix *A, Matrix *B) {
 
   CHECK(A);
@@ -157,7 +175,6 @@ void Matrix_difference(Matrix *A, Matrix *B) {
     }
   }
 }
-
 
 
 void Matrix_haddamard(Matrix *A, Matrix *B) {
@@ -177,7 +194,6 @@ void Matrix_haddamard(Matrix *A, Matrix *B) {
 }
 
 
-
 void Matrix_scalarprod(Matrix *A, double B) {
   CHECK(A);
 
@@ -190,18 +206,19 @@ void Matrix_scalarprod(Matrix *A, double B) {
 }
 
 
-
-void Matrix_transpose(Matrix *A) {
+Matrix* Matrix_transpose(Matrix *A) {
 
   CHECK(A);
 
-  for (int i = 0; i < A->rows; ++i) {
-    for (int j = i + 1; j < A->cols; ++j) {
-      Swap(&MAT_POS(A, i, j), &MAT_POS(A, j, i));
-    }
-  }
+  Matrix* B = (Matrix *)malloc(sizeof(Matrix));
+  B->rows = A->cols;
+  B->cols = A->rows;
+  B->row_stride = A->col_stride;
+  B->col_stride = A->row_stride;
+  B->elements = A->elements;
+  B->memfree_flag = 0;
+  return B;
 }
-
 
 
 Matrix* Matrix_submatrix(Matrix *A, int row_stride, int col_stride) {
@@ -223,7 +240,6 @@ Matrix* Matrix_submatrix(Matrix *A, int row_stride, int col_stride) {
 
   return B;
 }
-
 
 
 Matrix* Matrix_slice(Matrix* A, int row_start, int row_end, int col_start, int col_end) {
@@ -280,3 +296,4 @@ Matrix* Matrix_resize(Matrix *A, int rows, int cols) {
   }
   return B;
 }
+

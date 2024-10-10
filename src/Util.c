@@ -140,16 +140,16 @@ void Swap_cols(Matrix* A, int col1, int col2) {
 }
 
 
-void Matrix_copy(Matrix* A, Matrix* B) {
+void Matrix_copy(Matrix* Des, Matrix* Src) {
 
-  CHECK(A);
-  CHECK(B);
-  assert(A->rows == B->rows);
-  assert(A->cols == B->cols);
+  CHECK(Src);
+  CHECK(Des);
+  assert(Src->rows == Des->rows);
+  assert(Src->cols == Des->cols);
 
-  for (int i = 0; i < A->rows; ++i) {
-    for (int j = 0; j < A->cols; ++j) {
-      MAT_POS(A, i, j) = MAT_POS(B, i, j);
+  for (int i = 0; i < Des->rows; ++i) {
+    for (int j = 0; j < Des->cols; ++j) {
+      MAT_POS(Des, i, j) = MAT_POS(Src, i, j);
     }
   }
   return;
